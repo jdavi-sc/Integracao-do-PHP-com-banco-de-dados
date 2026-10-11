@@ -1,0 +1,8 @@
+{
+    "name": "josedavi/integracaophpcompostgre",
+    "description": "Integrando php com postgresql",
+    "type": "project",
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
+    }
+}
