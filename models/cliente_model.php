@@ -11,4 +11,11 @@
             ':data_nasc' => $dataNasc,
         ]);
     }
+
+    function buscarClientes($pdo) {
+        $sql = "SELECT id_cliente, nome_cliente, cpf_cliente, email_cliente, data_nascimento_cliente FROM cliente ORDER BY id_cliente DESC";
+        $stmt = $pdo->query($sql);
+
+        return $stmt->FetchAll(PDO::FETCH_ASSOC);
+    }
 ?>
