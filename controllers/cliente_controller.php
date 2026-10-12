@@ -9,7 +9,7 @@
         $dataNasc = $_POST['dataNascCliente'] ?? null;
 
         if ($nome && $cpf && $email && $dataNasc) {
-            $sucesso = salvarCliente($pdo, $nome, $cpf, $email, $dataNasc);
+            $sucesso = salvarCliente($pdo, trim($nome), trim($cpf), $email, $dataNasc);
 
             if ($sucesso) {
                 echo "Cliente cadastrado com sucesso!";

@@ -1,5 +1,10 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->safeLoad();
+
 $dsn = "pgsql:host=" . ($_ENV['DB_HOST'] ?? 'localhost') . 
        ";port=" . ($_ENV['DB_PORT'] ?? 5432) . 
        ";dbname=" . ($_ENV['DB_NAME'] ?? '');
@@ -17,3 +22,5 @@ try {
     error_log("Erro de conexão com o banco: " . $e->getMessage());
     die("Desculpe, ocorreu um problema ao conectar com o banco de dados.");
 }
+
+?>

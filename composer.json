@@ -2,7 +2,13 @@
     "name": "josedavi/integracaophpcompostgre",
     "description": "Integrando php com postgresql",
     "type": "project",
+    "license": "MIT",
     "require": {
         "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
     }
 }
