@@ -5,7 +5,7 @@ $dsn = "pgsql:host=" . ($_ENV['DB_HOST'] ?? 'localhost') .
        ";dbname=" . ($_ENV['DB_NAME'] ?? '');
 
 $user = $_ENV['DB_USER'] ?? 'postgres';
-$pass = $_ENV['DB_PASS'] ?? '';
+$pass = $_ENV['DB_PASSWORD'] ?? '';
 
 try {
     $pdo = new PDO($dsn, $user, $pass, [
