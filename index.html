@@ -1,23 +1,376 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Integracao | PDO</title>
+    <title>Cadastro de Cliente | Gestão de Clientes</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --brand-primary: #2563eb;
+            --brand-primary-hover: #1d4ed8;
+            --brand-primary-light: #eff6ff;
+            --brand-accent: #10b981;
+            --brand-dark: #0f172a;
+            --brand-slate: #1e293b;
+            --brand-muted: #64748b;
+            --brand-border: #e2e8f0;
+            --brand-bg: #f8fafc;
+            --brand-card-bg: #ffffff;
+            --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--brand-bg);
+            color: var(--brand-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--brand-border);
+        }
+
+        .brand-badge {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+            flex-shrink: 0;
+        }
+
+        .nav-pill-link {
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            color: var(--brand-muted);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .nav-pill-link:hover {
+            color: var(--brand-primary);
+            background-color: var(--brand-primary-light);
+        }
+
+        .nav-pill-link.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .app-card {
+            background-color: var(--brand-card-bg);
+            border: 1px solid var(--brand-border);
+            border-radius: 1.25rem;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+        }
+
+        .card-top-accent {
+            height: 5px;
+            background: linear-gradient(90deg, #2563eb, #38bdf8, #10b981);
+            border-top-left-radius: 1.25rem;
+            border-top-right-radius: 1.25rem;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--brand-slate);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control,
+        .input-group-text {
+            border-radius: 0.75rem;
+            border-color: var(--brand-border);
+            font-size: 1rem;
+            min-height: 48px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .input-group .form-control {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .input-group-text {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            background-color: #f8fafc;
+            color: var(--brand-muted);
+            border-right: none;
+        }
+
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+        .form-text {
+            font-size: 0.8rem;
+            color: var(--brand-muted);
+        }
+
+        .btn {
+            border-radius: 0.75rem;
+            font-weight: 600;
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border: none;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+            color: #ffffff;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline-secondary {
+            border-color: var(--brand-border);
+            color: var(--brand-slate);
+            background-color: #ffffff;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: var(--brand-dark);
+        }
+
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--brand-border);
+            background-color: #ffffff;
+        }
+    </style>
 </head>
+
 <body>
 
-    <form action="./controllers/cliente_controller.php" method="post">
-        <input type="text" name="nomeCliente" id="nomeCliente" required>
-        <input type="text" name="cpfCliente" id="cpfCliente" required maxlength="11" minlength="11">
-        <input type="email" name="emailCliente" id="emailCliente" required>
-        <input type="date" name="dataNascCliente" id="dataNascCliente" required>
-        <input type="submit">
-    </form>
+    <header class="app-navbar sticky-top py-2 py-md-3">
+        <div class="container d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <a href="./index.html" class="d-flex align-items-center text-decoration-none text-dark gap-2">
+                <div class="brand-badge">
+                    <i class="bi bi-people-fill fs-5"></i>
+                </div>
+                <div>
+                    <span class="fs-5 fw-bold tracking-tight text-dark d-block lh-1">Gestão de Clientes</span>
+                    <small class="text-secondary" style="font-size: 0.75rem;">Integração PHP & PDO</small>
+                </div>
+            </a>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+            <nav class="d-flex align-items-center gap-1 gap-sm-2" aria-label="Navegação Principal">
+                <a href="./index.html" class="nav-pill-link active" aria-current="page">
+                    <i class="bi bi-person-plus-fill"></i>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="./views/listar_clientes.php" class="nav-pill-link">
+                    <i class="bi bi-list-ul"></i>
+                    <span>Listar Clientes</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow-1 py-4 py-md-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+
+                    <div class="text-center mb-4">
+                        <span
+                            class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold mb-2">
+                            <i class="bi bi-person-plus me-1"></i> Novo Cadastro
+                        </span>
+                        <h1 class="h3 h2-md fw-bold text-dark mt-2 mb-1">Cadastrar Cliente</h1>
+                        <p class="text-secondary small">Preencha os campos abaixo com os dados cadastrais do cliente.
+                        </p>
+                    </div>
+
+                    <div class="app-card shadow-sm">
+                        <div class="card-top-accent"></div>
+                        <div class="p-3 p-sm-4 p-md-5">
+
+                            <form action="./controllers/cliente_controller.php" method="post" id="formCliente"
+                                class="needs-validation" novalidate>
+
+                                <div class="row g-3 g-md-4">
+                                    <div class="col-12">
+                                        <label for="nomeCliente" class="form-label">
+                                            <i class="bi bi-person me-1 text-primary"></i> Nome Completo
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                            <input type="text" class="form-control" name="nomeCliente" id="nomeCliente"
+                                                placeholder="Ex: Maria Oliveira Santos" autocomplete="name" required>
+                                            <div class="invalid-feedback">Por favor, informe o nome completo do cliente.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6">
+                                        <label for="cpfCliente" class="form-label">
+                                            <i class="bi bi-card-text me-1 text-primary"></i> CPF
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                            <input type="text" class="form-control" name="cpfCliente" id="cpfCliente"
+                                                placeholder="000.000.000-00" inputmode="numeric" maxlength="14"
+                                                required>
+                                            <div class="invalid-feedback">Informe um CPF válido (11 números).</div>
+                                        </div>
+                                        <div class="form-text mt-1">Apenas números (11 dígitos).</div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6">
+                                        <label for="dataNascCliente" class="form-label">
+                                            <i class="bi bi-calendar3 me-1 text-primary"></i> Data de Nascimento
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                                            <input type="date" class="form-control" name="dataNascCliente"
+                                                id="dataNascCliente" required>
+                                            <div class="invalid-feedback">Selecione uma data de nascimento válida.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="emailCliente" class="form-label">
+                                            <i class="bi bi-envelope me-1 text-primary"></i> E-mail
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                            <input type="email" class="form-control" name="emailCliente"
+                                                id="emailCliente" placeholder="cliente@exemplo.com" autocomplete="email"
+                                                required>
+                                            <div class="invalid-feedback">Informe um endereço de e-mail válido.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 pt-3">
+                                        <div
+                                            class="d-flex flex-column flex-sm-row gap-2 justify-content-between align-items-stretch">
+                                            <button class="btn btn-primary btn-lg order-1 order-sm-2 flex-grow-1"
+                                                type="submit" id="btnSalvar">
+                                                <i class="bi bi-check2-circle me-2"></i> Salvar Cliente
+                                            </button>
+                                            <a href="./views/listar_clientes.php"
+                                                class="btn btn-outline-secondary btn-lg order-2 order-sm-1">
+                                                <i class="bi bi-list-ul me-2"></i> Ver Lista
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div
+                        class="d-flex align-items-center gap-2 p-3 mt-4 rounded-3 bg-white border text-secondary small">
+                        <i class="bi bi-shield-check text-success fs-5 flex-shrink-0"></i>
+                        <span>Dados validados e integrados via conexão segura PDO com PostgreSQL.</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-3 text-center text-secondary small">
+        <div class="container">
+            <span>&copy; Gestão de Clientes &bull; Sistema Integrado PHP e Banco de Dados</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('formCliente');
+            const cpfInput = document.getElementById('cpfCliente');
+            const dataNascInput = document.getElementById('dataNascCliente');
+
+            const today = new Date().toISOString().split('T')[0];
+            if (dataNascInput) {
+                dataNascInput.max = today;
+            }
+
+            cpfInput.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v.length > 11) v = v.substring(0, 11);
+
+                if (v.length > 9) {
+                    v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2})$/, '$1.$2.$3-$4');
+                } else if (v.length > 6) {
+                    v = v.replace(/^(\d{3})(\d{3})(\d{1,3})$/, '$1.$2.$3');
+                } else if (v.length > 3) {
+                    v = v.replace(/^(\d{3})(\d{1,3})$/, '$1.$2');
+                }
+                e.target.value = v;
+            });
+
+            form.addEventListener('submit', (e) => {
+                const rawDigits = cpfInput.value.replace(/\D/g, '');
+                if (rawDigits.length !== 11) {
+                    cpfInput.setCustomValidity('CPF incompleto');
+                } else {
+                    cpfInput.setCustomValidity('');
+                }
+
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+
+                cpfInput.value = rawDigits;
+            });
+        });
+    </script>
 </body>
+
 </html>
